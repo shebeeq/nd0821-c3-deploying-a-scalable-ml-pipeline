@@ -94,9 +94,19 @@ async def post_predict(data: CensusData):
     input_dict = data.model_dump(by_alias=True)
     
     # 2. Create a clean DataFrame
-    df = pd.DataFrame([input_dict])
+    df_raw = pd.DataFrame([input_dict])
     
-    df["salary"] = "<=5K" 
+    ORIGINAL_COLUMNS_ORDER = [
+        "age", "workclass", "fnlwgt", "education", "education-num",
+        "marital-status", "occupation", "relationship", "race", "sex",
+        "capital-gain", "capital-loss", "hours-per-week", "native-country"
+    ]
+    
+    # Force the dataframe to take on the exact training sequence layout
+    df = df_raw.reindex(columns=ORIGINAL_COLUMNS_ORDER)
+    
+    # Inject the dummy tracking target variable label
+    df["salary"] = "<=5K"
     # 3. Explicitly enforce correct column types to prevent processing alignment issues
     int_cols = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
     for col in int_cols:
