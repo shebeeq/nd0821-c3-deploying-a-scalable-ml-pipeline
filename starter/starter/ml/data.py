@@ -60,11 +60,16 @@ def process_data(
         y = lb.fit_transform(y.values).ravel()
     else:
         X_categorical = encoder.transform(X_categorical)
-        try:
-            y = lb.transform(y.values).ravel()
-        # Catch the case where y is None because we're doing inference.
-        except AttributeError:
-            pass
+        if label is not None:
+            # CHANGE THIS BLOCk TO BE COMPLETELY SAFE FOR INFERENCE:
+            try:
+                # Only attempt transformation if the binarizer has been fitted
+                if hasattr(lb, "classes_") and lb.classes_ is not None:
+                    y = lb.transform(y).ravel()
+                else:
+                    y = np.array([])
+            except Exception:
+                y = np.array([])
 
     X = np.concatenate([X_continuous, X_categorical], axis=1)
     return X, y, encoder, lb
