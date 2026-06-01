@@ -2,7 +2,7 @@
 import os
 import pickle
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -90,49 +90,54 @@ async def get_root():
 
 @app.post("/predict")
 async def post_predict(data: CensusData):
-    # 1. Extract raw parameters using their exact hyphenated aliases
+    # 1. Ingest incoming parameters using their exact hyphenated aliases
     input_dict = data.model_dump(by_alias=True)
     
-    # 2. Create a clean DataFrame
+    # 🎯 ALIGN THE ENCODER KEY NAME:
+    # If the payload came in with 'fnlwgt', rename the dict key to 'fnlgt' 
+    # so it matches your original census.csv array columns layout perfectly.
+    if "fnlwgt" in input_dict:
+        input_dict["fnlgt"] = input_dict.pop("fnlwgt")
+    
+    # 2. Convert dictionary to DataFrame
     df_raw = pd.DataFrame([input_dict])
     
+    # 3. Enforce the exact training column matrix sequence
     ORIGINAL_COLUMNS_ORDER = [
         "age", "workclass", "fnlgt", "education", "education-num",
         "marital-status", "occupation", "relationship", "race", "sex",
         "capital-gain", "capital-loss", "hours-per-week", "native-country"
     ]
-    
-    # Force the dataframe to take on the exact training sequence layout
     df = df_raw.reindex(columns=ORIGINAL_COLUMNS_ORDER)
     
-    # Inject the dummy tracking target variable label
-    df["salary"] = "<=5K"
-    # 3. Explicitly enforce correct column types to prevent processing alignment issues
-    int_cols = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+    # 4. Inject target variable label placeholder
+    df["salary"] = "<=5K"  
+
+    # 5. Restrict data type formats
+    int_cols = ["age", "fnlgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
     for col in int_cols:
         if col in df.columns:
             df[col] = df[col].astype(int)
             
-    # 4. Process features using your saved pipeline parameters safely
+    # 6. Execute data parsing pipeline and predict
     try:
         X, _, _, _ = process_data(
             df, 
             categorical_features=CAT_FEATURES, 
+            label="salary",  
             training=False, 
             encoder=encoder, 
             lb=lb
         )
         
-        # 5. Execute model prediction
         raw_pred = inference(model, X)
         prediction_label = lb.inverse_transform(raw_pred)
         
-        # 6. Extract the label value uniformly as a string clean of array brackets
-        pred_str = str(prediction_label[0]) if hasattr(prediction_label, '__len__') and len(prediction_label) > 0 else str(prediction_label)
+        pred_str = str(prediction_label).strip()
         return {"prediction": pred_str}
         
     except Exception as e:
-        # This logs any hidden exception directly into your Render dashboard logs
-        print(f"🔥 Prediction pipeline crashed internally: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Inference Failure: {str(e)}")
+        print(f"🔥 Matrix processing exception: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Inference Pipeline Error: {str(e)}")
+
 
