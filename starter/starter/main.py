@@ -15,20 +15,20 @@ app = FastAPI(
 
 # Setup pathing variables relative to this module root
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../../")) # Base repo directory
+
+if REPO_ROOT not in sys.path:
+    sys.path.append(REPO_ROOT)
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-from ml.data import process_data
-from ml.model import inference
+from starter.starter.ml.data import process_data
+from starter.starter.ml.model import inference
+
+# Point directly to the model folder in the base repository root directory
+MODEL_DIR = os.path.join(REPO_ROOT, "model")
+print(f"Loading tracking models directly from: {os.path.abspath(MODEL_DIR)}")
 # 1. Try checking inside starter/starter/model/
-if os.path.exists(os.path.join(BASE_DIR, "model", "model.pkl")):
-    MODEL_DIR = os.path.join(BASE_DIR, "model")
-# 2. Try checking inside starter/model/
-elif os.path.exists(os.path.join(BASE_DIR, "../model", "model.pkl")):
-    MODEL_DIR = os.path.join(BASE_DIR, "../")
-# 3. Fallback to check the project root level
-else:
-    MODEL_DIR = os.path.join(BASE_DIR, "../../model")
 
 # Load our saved pipeline artifacts globally on app startup
 with open(os.path.join(MODEL_DIR, "model.pkl"), "rb") as f:
