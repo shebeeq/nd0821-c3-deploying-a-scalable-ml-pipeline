@@ -90,22 +90,38 @@ async def get_root():
 
 @app.post("/predict")
 async def post_predict(data: CensusData):
-    """ POST request running end-to-end model inference on an incoming feature vector. """
-    # Ingest using our raw hyphenated parameters via dump alias extraction
+    # 1. Extract raw parameters using their exact hyphenated aliases
     input_dict = data.model_dump(by_alias=True)
+    
+    # 2. Create a clean DataFrame
     df = pd.DataFrame([input_dict])
     
-    # Process features using the saved operational pipeline parameters
-    X, _, _, _ = process_data(
-        df, 
-        categorical_features=CAT_FEATURES, 
-        training=False, 
-        encoder=encoder, 
-        lb=lb
-    )
-    
-    # Run structural prediction checks
-    raw_pred = inference(model, X)
-    prediction_label = lb.inverse_transform(raw_pred)[0]
-    
-    return {"prediction": str(prediction_label)}
+    # 3. Explicitly enforce correct column types to prevent processing alignment issues
+    int_cols = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+    for col in int_cols:
+        if col in df.columns:
+            df[col] = df[col].astype(int)
+            
+    # 4. Process features using your saved pipeline parameters safely
+    try:
+        X, _, _, _ = process_data(
+            df, 
+            categorical_features=CAT_FEATURES, 
+            training=False, 
+            encoder=encoder, 
+            lb=lb
+        )
+        
+        # 5. Execute model prediction
+        raw_pred = inference(model, X)
+        prediction_label = lb.inverse_transform(raw_pred)
+        
+        # 6. Extract the label value uniformly as a string clean of array brackets
+        pred_str = str(prediction_label[0]) if hasattr(prediction_label, '__len__') and len(prediction_label) > 0 else str(prediction_label)
+        return {"prediction": pred_str}
+        
+    except Exception as e:
+        # This logs any hidden exception directly into your Render dashboard logs
+        print(f"🔥 Prediction pipeline crashed internally: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Inference Failure: {str(e)}")
+
