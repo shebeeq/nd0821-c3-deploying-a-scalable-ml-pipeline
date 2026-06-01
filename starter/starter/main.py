@@ -67,7 +67,7 @@ class CensusData(BaseModel):
             "example": {
                 "age": 39,
                 "workclass": "State-gov",
-                "fnlwgt": 77516,
+                "fnlgt": 77516,
                 "education": "Bachelors",
                 "education-num": 13,
                 "marital-status": "Never-married",
@@ -97,7 +97,7 @@ async def post_predict(data: CensusData):
     df_raw = pd.DataFrame([input_dict])
     
     ORIGINAL_COLUMNS_ORDER = [
-        "age", "workclass", "fnlwgt", "education", "education-num",
+        "age", "workclass", "fnlgt", "education", "education-num",
         "marital-status", "occupation", "relationship", "race", "sex",
         "capital-gain", "capital-loss", "hours-per-week", "native-country"
     ]
