@@ -96,6 +96,7 @@ async def post_predict(data: CensusData):
     # 2. Create a clean DataFrame
     df = pd.DataFrame([input_dict])
     
+    df["salary"] = "<=5K" 
     # 3. Explicitly enforce correct column types to prevent processing alignment issues
     int_cols = ["age", "fnlwgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
     for col in int_cols:
