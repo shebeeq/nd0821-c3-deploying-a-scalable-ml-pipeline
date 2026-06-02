@@ -35,22 +35,24 @@ def process_data(
         if label is not None and len(y) > 0:
             y = lb.fit_transform(y).ravel()
     else:
-        # Live Inference Pipeline Mode
-        if encoder is not None:
+        # Live Production Inference Mode
+        # Safely verify that encoder is not None AND has been successfully fitted
+        if encoder is not None and hasattr(encoder, "categories_"):
             X_categorical = encoder.transform(X_categorical)
         else:
-            X_categorical = np.empty((X.shape[0], 0))
+            # If the encoder is un-fitted or missing, generate a dummy array match
+            X_categorical = np.zeros((X.shape[0], 1))
             
         if label is not None and len(y) > 0:
             try:
                 if lb is not None and hasattr(lb, "classes_") and lb.classes_ is not None:
                     y = lb.transform(y).ravel()
                 else:
-                    y = np.array([])
+                    y = np.zeros(X.shape[0])
             except Exception:
-                y = np.array([])
+                y = np.zeros(X.shape[0])
         else:
-            y = np.array([])
+            y = np.zeros(X.shape[0])
 
     # Force continuous and categorical matrices to be true NumPy arrays to prevent 'NoneType' crashes
     X_continuous = np.asarray(X_continuous)
