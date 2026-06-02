@@ -110,11 +110,11 @@ dmypy.json
 
 # Machine Learning / Data Science specific
 # Models
-*.pkl
+# *.pkl
 *.joblib
 *.h5
 *.hdf5
-*.model
+# *.model
 *.weights
 
 # Data files (but keep small sample data)
