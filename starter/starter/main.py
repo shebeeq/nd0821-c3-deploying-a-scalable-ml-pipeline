@@ -19,11 +19,16 @@ if BASE_DIR not in sys.path:
 # =========================================================================
 # This mapping tells Python's internal import system that references to 'ml' 
 # inside the saved .pkl files map perfectly to your actual 'starter.starter.ml' directory tree.
+import starter.starter.ml.data as ml_data
+import starter.starter.ml.model as ml_model
 from starter.starter import ml
-sys.modules['ml'] = ml
-sys.modules['ml.data'] = ml.data
-sys.modules['ml.model'] = ml.model
 
+# 2. Bind the module mappings so the pickle unpickler maps them safely
+sys.modules['ml'] = ml
+sys.modules['ml.data'] = ml_data
+sys.modules['ml.model'] = ml_model
+
+# 3. Your standard functional imports continue below cleanly:
 from starter.starter.ml.data import process_data
 from starter.starter.ml.model import inference
 # =========================================================================
