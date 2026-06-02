@@ -1,43 +1,56 @@
-from starter.starter.ml.model import inference
-from starter.starter.ml.data import process_data
-from starter.starter import ml
-import starter.starter.ml.model as ml_model
-import starter.starter.ml.data as ml_data
 import os
-import pickle
 import sys
+import pickle
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-# Ensure internal modules can be found safely by both local and cloud environments
+# =========================================================================
+# 🎯 DYNAMIC REPO PATH RESOLUTION (RESOLVES GITHUB RUNNER & PROD ENVS)
+# =========================================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # starter/starter
-REPO_ROOT = os.path.abspath(os.path.join(
-    BASE_DIR, "../../"))  # Base repo directory
 
+# Walk backwards to find where the absolute base 'nd0821...' repo directory sits
+if "starter/starter" in BASE_DIR:
+    REPO_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../../"))
+else:
+    REPO_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../.."))
+
+# Append paths into Python's system lookup matrix safely
 if REPO_ROOT not in sys.path:
-    sys.path.append(REPO_ROOT)
+    sys.path.insert(0, REPO_ROOT)
 if BASE_DIR not in sys.path:
-    sys.path.append(BASE_DIR)
+    sys.path.insert(0, BASE_DIR)
 
-# =========================================================================
-# 🎯 CRITICAL PICKLE RE-ROUTING HANDSHAKE (RESOLVES THE 500 NDIM ERROR)
-# =========================================================================
-# This mapping tells Python's internal import system that references to 'ml'
-# inside the saved .pkl files map perfectly to your actual 'starter.starter.ml' directory tree.
+# Dynamically patch 'starter.starter' packages into the global namespace module 
+# so that it executes flawlessly regardless of the current working directory level
+try:
+    import starter.starter.ml.data as ml_data
+    import starter.starter.ml.model as ml_model
+    from starter.starter import ml
+except ModuleNotFoundError:
+    # Fallback structure if running directly inside the inner starter context
+    import ml.data as ml_data
+    import ml.model as ml_model
+    import ml
 
-# 2. Bind the module mappings so the pickle unpickler maps them safely
 sys.modules['ml'] = ml
 sys.modules['ml.data'] = ml_data
 sys.modules['ml.model'] = ml_model
+sys.modules['starter.starter.ml'] = ml
+sys.modules['starter.starter.ml.data'] = ml_data
+sys.modules['starter.starter.ml.model'] = ml_model
 
-# 3. Your standard functional imports continue below cleanly:
+# Import core pipeline functions uniformly
+from ml.data import process_data
+from ml.model import inference
 # =========================================================================
 
 app = FastAPI(
     title="Census Income Inference API",
     description="An API to predict structural income brackets from census characteristics."
 )
+
 
 # Point directly to the model folder in the base repository root directory
 MODEL_DIR = os.path.join(REPO_ROOT, "model")
