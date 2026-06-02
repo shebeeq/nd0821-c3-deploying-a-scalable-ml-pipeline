@@ -1,4 +1,3 @@
-import json
 import requests
 
 # 1. Swap this string out with your real public production web address
@@ -29,5 +28,5 @@ response = requests.post(LIVE_URL, json=payload)
 
 # 4. Return results inside your local execution terminal
 print(f"HTTP Return Status Code: {response.status_code}")
-print(f"Raw Response Text: {response.text}") 
+print(f"Raw Response Text: {response.text}")
 # print(f"API Model Inference Response Result: {response.json()}")

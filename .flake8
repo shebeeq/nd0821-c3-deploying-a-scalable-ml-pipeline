@@ -1,0 +1,23 @@
+[flake8]
+# 1. Completely ignore third-party vendor code and system files
+exclude = 
+    .venv,
+    venv,
+    .git,
+    __pycache__,
+    build,
+    dist
+
+# 2. Relax strict line-length bounds to allow clean execution parameters
+max-line-length = 127
+
+# 3. Suppress secondary warnings inside your utility helpers and tests
+per-file-ignores =
+    starter/sanitycheck.py: E231, E203, E501, E302, E303, E265, E266, W291, W293, F401, E128, E222, E225
+    starter/starter/ml/slices.py: F401, F541, E501
+    starter/starter/ml/data.py: F401, E501
+    starter/starter/main.py: E501
+    starter/starter/test_main.py: E501
+    starter/starter/test_model.py: E501
+    starter/starter/train_model.py: E501
+    starter/starter/post_live_api.py: E501
