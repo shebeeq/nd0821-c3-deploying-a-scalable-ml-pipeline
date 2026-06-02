@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 
+
 def process_data(
     X, categorical_features=[], label=None, training=True, encoder=None, lb=None
 ):
@@ -42,7 +43,7 @@ def process_data(
         else:
             # If the encoder is un-fitted or missing, generate a dummy array match
             X_categorical = np.zeros((X.shape[0], 1))
-            
+
         if label is not None and len(y) > 0:
             try:
                 if lb is not None and hasattr(lb, "classes_") and lb.classes_ is not None:
@@ -60,5 +61,5 @@ def process_data(
 
     # Perform the final alignment concatenation safely
     X = np.concatenate([X_continuous, X_categorical], axis=1)
-    
+
     return X, y, encoder, lb

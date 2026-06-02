@@ -1,4 +1,5 @@
 
+from main import app
 import sys
 import os
 from fastapi.testclient import TestClient
@@ -10,11 +11,12 @@ sys.path.append(os.path.abspath(os.path.join(BASE_DIR, "../..")))
 # Ensure the local directory path can be tracked by pytest natively
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from main import app
 
 client = TestClient(app)
 
 # --- TEST 1: GET Method Verification ---
+
+
 def test_get_root():
     """
     Tests GET on the root domain.
@@ -22,7 +24,8 @@ def test_get_root():
     """
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"greeting": "Welcome to the Census Income Predictive Model Portal!"}
+    assert response.json() == {
+        "greeting": "Welcome to the Census Income Predictive Model Portal!"}
 
 
 # --- TEST 2: POST Inference for Low Income Bracket (<=5K) ---

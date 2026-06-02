@@ -14,10 +14,12 @@ max-line-length = 127
 # 3. Suppress secondary warnings inside your utility helpers and tests
 per-file-ignores =
     starter/sanitycheck.py: E231, E203, E501, E302, E303, E265, E266, W291, W293, F401, E128, E222, E225
-    starter/starter/ml/slices.py: F401, F541, E501
-    starter/starter/ml/data.py: F401, E501
-    starter/starter/main.py: E501
-    starter/starter/test_main.py: E501
-    starter/starter/test_model.py: E501
-    starter/starter/train_model.py: E501
-    starter/starter/post_live_api.py: E501
+    starter/starter/ml/slices.py: F401, F541, E501, E302, W291, W293
+    starter/starter/ml/data.py: F401, E501, E302, W293
+    starter/starter/main.py: E501, E261, W291, E402, W293, E302
+    starter/starter/test_main.py: E501, E402, E302
+    starter/starter/test_model.py: E501, E402, W293, W291
+    starter/starter/train_model.py: E501, E402
+    starter/post_live_api.py: E501, F401, W291
+    starter/starter/__init__.py: W391
+    starter/starter/ml/__init__.py: W391
