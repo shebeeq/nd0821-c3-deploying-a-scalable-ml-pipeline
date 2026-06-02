@@ -1,3 +1,10 @@
+import sys
+import os
+# Forces the CI runner to look in the exact directory where your code lives
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+sys.path.append(os.path.abspath(os.path.join(BASE_DIR, "../..")))
+
 import pytest
 import numpy as np
 import pandas as pd

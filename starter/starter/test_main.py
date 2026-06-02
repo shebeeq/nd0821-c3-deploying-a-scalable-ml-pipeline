@@ -1,6 +1,11 @@
-from fastapi.testclient import TestClient
+
 import sys
 import os
+from fastapi.testclient import TestClient
+# Forces the CI runner to look in the exact directory where your code lives
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+sys.path.append(os.path.abspath(os.path.join(BASE_DIR, "../..")))
 
 # Ensure the local directory path can be tracked by pytest natively
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
