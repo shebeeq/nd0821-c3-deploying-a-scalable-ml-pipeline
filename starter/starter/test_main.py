@@ -1,24 +1,5 @@
-import sys
-import os
-
-# Find the absolute path to the repository root directory
-current_dir = os.path.dirname(os.path.abspath(__file__)) # starter/starter
-repo_root = os.path.abspath(os.path.join(current_dir, "../../")) # base directory
-
-# Inject the repository root into the search path so starter.starter can be found
-if repo_root not in sys.path:
-    sys.path.insert(0, repo_root)
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
-
-# Bind the module mappings for the pickle unpickler
-from starter.starter import ml
-sys.modules['ml'] = ml
-sys.modules['ml.data'] = ml.data
-sys.modules['ml.model'] = ml.model
-
-from main import app
 from fastapi.testclient import TestClient
+from main import app
 
 client = TestClient(app)
 
