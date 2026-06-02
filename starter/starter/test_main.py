@@ -1,16 +1,17 @@
 import sys
 import os
 
-# 1. Force Python to find your main code directories on the CI server
-BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # starter/starter
-REPO_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../../")) # Base repository root
+# Find the absolute path to the repository root directory
+current_dir = os.path.dirname(os.path.abspath(__file__)) # starter/starter
+repo_root = os.path.abspath(os.path.join(current_dir, "../../")) # base directory
 
-if REPO_ROOT not in sys.path:
-    sys.path.append(REPO_ROOT)
-if BASE_DIR not in sys.path:
-    sys.path.append(BASE_DIR)
+# Inject the repository root into the search path so starter.starter can be found
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
-# 2. Bind the module mappings so pytest can unpack internal references safely
+# Bind the module mappings for the pickle unpickler
 from starter.starter import ml
 sys.modules['ml'] = ml
 sys.modules['ml.data'] = ml.data
