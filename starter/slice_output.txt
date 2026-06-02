@@ -1,0 +1,100 @@
+==================================================
+ PERFORMANCE SLICES FOR FEATURE: education
+==================================================
+
+Value Category: Some-college
+  Sample Size: 1485
+  Precision:   0.7500
+  Recall:      0.3682
+  F1-Score:    0.4939
+--------------------------------------------------
+Value Category: HS-grad
+  Sample Size: 2085
+  Precision:   0.9412
+  Recall:      0.2319
+  F1-Score:    0.3721
+--------------------------------------------------
+Value Category: Bachelors
+  Sample Size: 1053
+  Precision:   0.7490
+  Recall:      0.7956
+  F1-Score:    0.7716
+--------------------------------------------------
+Value Category: Masters
+  Sample Size: 369
+  Precision:   0.8279
+  Recall:      0.8599
+  F1-Score:    0.8436
+--------------------------------------------------
+Value Category: Assoc-acdm
+  Sample Size: 198
+  Precision:   0.7500
+  Recall:      0.5106
+  F1-Score:    0.6076
+--------------------------------------------------
+Value Category: 7th-8th
+  Sample Size: 141
+  Precision:   1.0000
+  Recall:      0.0000
+  F1-Score:    0.0000
+--------------------------------------------------
+Value Category: 11th
+  Sample Size: 225
+  Precision:   1.0000
+  Recall:      0.2727
+  F1-Score:    0.4286
+--------------------------------------------------
+Value Category: Assoc-voc
+  Sample Size: 273
+  Precision:   0.7222
+  Recall:      0.4127
+  F1-Score:    0.5253
+--------------------------------------------------
+Value Category: Prof-school
+  Sample Size: 116
+  Precision:   0.8370
+  Recall:      0.9167
+  F1-Score:    0.8750
+--------------------------------------------------
+Value Category: 9th
+  Sample Size: 115
+  Precision:   1.0000
+  Recall:      0.3333
+  F1-Score:    0.5000
+--------------------------------------------------
+Value Category: 5th-6th
+  Sample Size: 62
+  Precision:   1.0000
+  Recall:      0.5000
+  F1-Score:    0.6667
+--------------------------------------------------
+Value Category: 10th
+  Sample Size: 183
+  Precision:   1.0000
+  Recall:      0.0833
+  F1-Score:    0.1538
+--------------------------------------------------
+Value Category: Doctorate
+  Sample Size: 77
+  Precision:   0.8525
+  Recall:      0.9123
+  F1-Score:    0.8814
+--------------------------------------------------
+Value Category: 12th
+  Sample Size: 98
+  Precision:   1.0000
+  Recall:      0.4000
+  F1-Score:    0.5714
+--------------------------------------------------
+Value Category: 1st-4th
+  Sample Size: 23
+  Precision:   1.0000
+  Recall:      1.0000
+  F1-Score:    1.0000
+--------------------------------------------------
+Value Category: Preschool
+  Sample Size: 10
+  Precision:   1.0000
+  Recall:      1.0000
+  F1-Score:    1.0000
+--------------------------------------------------
