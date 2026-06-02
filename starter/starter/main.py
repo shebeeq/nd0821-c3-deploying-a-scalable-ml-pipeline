@@ -153,11 +153,20 @@ async def post_predict(data: CensusData):
         )
         
         raw_pred = inference(model, X)
-        prediction_label = lb.inverse_transform(raw_pred)
+        pred_int = int(raw_pred[0])
+
+        if pred_int == 1:
+            pred_str = ">5K"
+        else:
+            pred_str = "<=5K"
+        # =========================================================================
+        
+        return {"prediction": pred_str}
+        # prediction_label = lb.inverse_transform(raw_pred)
         
         # Format label clean of structural array brackets
-        raw_label = prediction_label[0] if hasattr(prediction_label, '__len__') else prediction_label
-        return {"prediction": str(raw_label).strip()}
+        # raw_label = prediction_label[0] if hasattr(prediction_label, '__len__') else prediction_label
+        # return {"prediction": str(raw_label).strip()}
         
     except Exception as e:
         print(f"🔥 Matrix processing exception: {str(e)}")
